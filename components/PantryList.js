@@ -1,7 +1,7 @@
 // components/PantryList.js
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, query, onSnapshot } from 'firebase/firestore';
+import { collection, query, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { List, ListItem, ListItemText, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -20,6 +20,10 @@ const PantryList = ({ queryText }) => {
     return () => unsubscribe();
   }, []);
 
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, 'pantryItems', id));
+  };
+
   return (
     <List>
       {items
@@ -27,7 +31,7 @@ const PantryList = ({ queryText }) => {
         .map((item) => (
           <ListItem key={item.id}>
             <ListItemText primary={item.name} secondary={`Quantity: ${item.quantity}`} />
-            <IconButton edge="end" aria-label="delete">
+            <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(item.id)}>
               <DeleteIcon />
             </IconButton>
           </ListItem>
